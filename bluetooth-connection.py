@@ -23,10 +23,10 @@ print(client_info)
 
 
 while True:
-	print("test")
-	data = client_sock.recv(1024)
+	data = client_sock.recv(1024).decode('utf-8')
 	if len(data) == 0: break
 	print(data)
+	client_sock.send("Pi4 received message: "+data)
 
 print("disc")
 
