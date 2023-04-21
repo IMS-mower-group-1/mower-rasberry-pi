@@ -1,4 +1,10 @@
 from bluetooth import *
+#import serial
+#import time
+
+# Define the serial port and baud rate.
+#ser = serial.Serial('/dev/ttyAMA0', 9600)
+
 
 server_socket = BluetoothSocket(RFCOMM)
 server_socket.bind(("",PORT_ANY))
@@ -25,11 +31,15 @@ print(client_info)
 while True:
 	data = client_sock.recv(1024).decode('utf-8')
 	if len(data) == 0: break
+	#ser.write(data.encode())
 	print(data)
-	client_sock.send("Pi4 received message: "+data)
-
+	client_sock.send('1')
+	#client_sock.send("Pi4 received message: "+data)
+	
+	
 print("disc")
 
 client_sock.close()
+#ser.close()
 server_socket.close()
 
