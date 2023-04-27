@@ -11,7 +11,6 @@ while True:
     server_socket.bind(("", PORT_ANY))
     server_socket.listen(1)
     print("waiting for client to connect...")
-
     port = server_socket.getsockname()[1]
 
     uuid = "30097c35-95b9-4f92-9d2e-e3e06aa3b07f"
@@ -31,8 +30,13 @@ while True:
         try:
             data = client_sock.recv(1024).decode('utf-8')
             if len(data) == 0: break
-            print(data.encode())
             ser.write(data.encode())
+
+            # Read data from the serial communication and print it
+            if ser.in_waiting > 0:
+                serial_data = ser.readline().decode('utf-8').strip()
+                print(f"Serial data received: {serial_data}")
+
         except BluetoothError as e:
             print(f"Error occurred: {e}")
             print("disconnecting..")
