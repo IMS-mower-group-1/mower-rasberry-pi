@@ -1,8 +1,7 @@
 import requests
+from config import *
 
-mowerId = "aBPovOQznCxzNHE0Uo97"
-
-def start_mow_session(api_key):
+def start_mow_session():
     headers = {
         "Content-Type": "application/json",
         "x-api-key": api_key
@@ -13,12 +12,11 @@ def start_mow_session(api_key):
 
     if response.status_code == 201:
         print("Mow session started successfully")
-        return response.json()
+        return response.status_code
     else:
-        print(response.json()['error'])
-        return None
+        return response.status_code
 
-def end_mow_session(api_key):
+def end_mow_session():
     headers = {
         "Content-Type": "application/json",
         "x-api-key": api_key
@@ -29,12 +27,11 @@ def end_mow_session(api_key):
 
     if response.status_code == 200:
         print("Mow session ended successfully")
-        return response.json()
+        return response.status_code
     else:
-        print(response.json()['error'])
-        return None
+        return response.status_code
         
-def update_mower_position(api_key, xPos, yPos):
+def update_mower_position(xPos, yPos):
     headers = {
         "Content-Type": "application/json",
         "x-api-key": api_key
@@ -45,12 +42,11 @@ def update_mower_position(api_key, xPos, yPos):
 
     if response.status_code == 200:
         print("Mower position updated successfully")
-        return response.json()
+        return response.status_code
     else:
-        print(response.json()['error'])
-        return None
+        return response.status_code
     
-def upload_avoided_collision(api_key, image_data):
+def upload_avoided_collision(image_data):
     headers = {
         "Content-Type": "application/octet-stream",
         "x-api-key": api_key
@@ -61,5 +57,6 @@ def upload_avoided_collision(api_key, image_data):
 
     if response.status_code == 200:
         print("Avoided collision uploaded successfully")
+        return response.status_code
     else:
-        print(response.json()['error'])
+        return response.status_code

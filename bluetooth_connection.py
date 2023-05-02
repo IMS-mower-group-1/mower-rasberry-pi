@@ -1,11 +1,16 @@
 import sys
 from bluetooth import *
 from threading import Thread
+import api_requests
+
+def contains_digits(s):
+    return any(c.isdigit() for c in s)
 
 class BluetoothConnection(Thread):
-    def __init__(self):
+    def __init__(self, data_queue):
         Thread.__init__(self)
-
+        self.data_queue = data_queue
+        
     def run(self):
         while True:
             server_socket = BluetoothSocket(RFCOMM)
@@ -24,9 +29,24 @@ class BluetoothConnection(Thread):
             while True:
                 try:
                     data = client_sock.recv(1024).decode('utf-8')
+                    if not contains_digits(data):
+                        data = data.strip()
+
                     if len(data) == 0:
                         break
-                    yield data
+                    # Handle received data
+                    if data == "START_SESSION":
+                        print("Attempting to start session...")
+                        status_code = api_requests.start_mow_session()
+                        if status_code == 201:
+                            self.data_queue.put(data)  # Add received data to the queue
+                    elif data == "END_SESSION":
+                        print("Attempting to end session...")
+                        status_code = api_requests.end_mow_session()
+                        if status_code == 200:
+                            self.data_queue.put(data)  # Add received data to the queue
+                    else:
+                        self.data_queue.put(data)  # Add received data to the queue
 
                 except BluetoothError as e:
                     print(f"Error occurred: {e}")
