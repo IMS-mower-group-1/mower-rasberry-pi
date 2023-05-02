@@ -44,6 +44,7 @@ def update_mower_position(xPos, yPos):
         print("Mower position updated successfully")
         return response.status_code
     else:
+        print("Mower position not updated")
         return response.status_code
     
 def upload_avoided_collision(image_data):

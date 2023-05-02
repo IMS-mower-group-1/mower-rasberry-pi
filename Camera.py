@@ -1,36 +1,34 @@
-import serial
-from picamera2 import Picamera2
+import io
+import picamera
+import time
+from PIL import Image
 
-picam2 = Picamera2()
-ser = serial.Serial("/dev/ttyUSB0", 9600) 
+def capture_image_data():
+    with picamera.PiCamera() as camera:
+        # Configure the camera settings if needed
+        camera.resolution = (1024, 768)
 
-try:
-    ser = serial.Serial(port = "/dev/ttyUSB0", 
-    baudrate = 9600,
-    timeout = 0.1,
-    parity = serial.PARITY_NONE,
-    stopbits = serial.STOPBITS_ONE,
-    bytesize = serial.EIGHTBITS)
-    if ser.isOpen():
-        print("Port is open")
-    else:
-        ser.open()
-        print("Port was closed and is now open")
+        # Give the camera some time to adjust settings
+        camera.start_preview()
+        time.sleep(1)
+        camera.stop_preview()
 
-except serial.SerialException as e:
-    print("Failed to open port: {}".format(e))
+        # Capture the image into a BytesIO object
+        with io.BytesIO() as image_data:
+            camera.capture(image_data, 'jpeg')
+            image_data.seek(0)
 
-while True:
-    signal = ser.readline().decode().strip()  # read the signal from the serial port
-    print("Signal is: ",signal)
-    if signal == "1":
-        try:
-            picam2.start_and_capture_file("test.jpg", delay=3, show_preview=False)
-            print('Picture taken successfully!')
-        except Exception as e:
-            print('Error taking picture:', e)
-    else:
-        print("gotten other than 1")
-    
-    
-        
+            # Load the image using PIL and rotate it
+            image = Image.open(image_data)
+            rotated_image = image.rotate(180, expand=True)
+
+            # Save the rotated image into a new BytesIO object
+            with io.BytesIO() as rotated_image_data:
+                rotated_image.save(rotated_image_data, 'jpeg')
+                rotated_image_data.seek(0)
+
+                # Return the rotated image data
+                return rotated_image_data.getvalue()
+	
+
+
