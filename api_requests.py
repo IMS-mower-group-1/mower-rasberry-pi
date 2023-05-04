@@ -61,3 +61,18 @@ def upload_avoided_collision(image_data):
         return response.status_code
     else:
         return response.status_code
+        
+def active_session_exists():
+    headers = {
+        "Content-Type": "application/octet-stream",
+        "x-api-key": api_key
+    }
+    url = f"https://tgin13-1-q1387758.deta.app/mow-session/mower/{mowerId}/active"
+    response = requests.get(url, headers=headers)
+    
+    if response.json() != None:
+        print("Active mow session exists")
+        return True
+    else:
+        print("No active mow session found or an error occured")
+        return False

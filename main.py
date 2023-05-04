@@ -1,9 +1,11 @@
 import sys
 sys.path.append('/home/admin/.local/lib/python3.9/site-packages')
+import time
 from bluetooth_connection import BluetoothConnection
 from serial_communication import SerialCommunication
 import threading
 from queue import Queue
+import api_requests
 
 # Initialize a queue for passing data between threads
 data_queue = Queue()
@@ -12,6 +14,15 @@ data_queue = Queue()
 bt_thread = BluetoothConnection(data_queue)
 serial_thread = SerialCommunication('/dev/ttyUSB0')
 
+# Wait for wifi-connection to be established
+time.sleep(5)
+
+# Check if there is an active mow session
+active_session_exists = api_requests.active_session_exists()
+if active_session_exists:
+	data_queue.put("START_SESSION")
+else:
+	data_queue.put("END_SESSION")
 # Start both threads
 bt_thread.start()
 serial_thread.start()

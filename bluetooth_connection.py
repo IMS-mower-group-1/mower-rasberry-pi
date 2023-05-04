@@ -38,6 +38,7 @@ class BluetoothConnection(Thread):
                     if data == "START_SESSION":
                         print("Attempting to start session...")
                         status_code = api_requests.start_mow_session()
+                        print(status_code)
                         if status_code == 201:
                             self.data_queue.put(data)  # Add received data to the queue
                     elif data == "END_SESSION":

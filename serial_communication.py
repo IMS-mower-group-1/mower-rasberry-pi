@@ -30,6 +30,8 @@ class SerialCommunication(Thread):
                     
                 elif contains_digits(serial_data):
                     x, y = self.extract_coordinates(serial_data)
+                    x = x/10
+                    y = y/10
                     api_requests.update_mower_position(x, y)
                     
                 else:
