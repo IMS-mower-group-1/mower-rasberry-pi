@@ -15,7 +15,7 @@ bt_thread = BluetoothConnection(data_queue)
 serial_thread = SerialCommunication('/dev/ttyUSB0')
 
 # Wait for wifi-connection to be established
-time.sleep(5)
+time.sleep(10)
 
 # Check if there is an active mow session
 active_session_exists = api_requests.active_session_exists()
